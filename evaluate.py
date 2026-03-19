@@ -80,9 +80,6 @@ def evaluate_model_no_sklearn(model, test_dir):
     all_labels = np.array(all_labels)
     all_preds = np.array(all_preds)
 
-    # Overall accuracy
-    acc = 100 * np.sum(all_labels == all_preds) / len(all_labels)
-    print(f"Test Accuracy: {acc:.2f}%")
 
     # Per-class accuracy
     class_names = test_dataset.class_names
