@@ -68,16 +68,6 @@ def img_processing(input_path, output_dir):
     v_flip = pil_img.transpose(Image.FLIP_TOP_BOTTOM)
     v_flip.save(os.path.join(output_dir, f"{base}_grey_vflip.jpg"))
 
-    # ---- SOBEL (saved as separate image, not sure if these will be useful yet) ----
-    sobelx = cv2.Sobel(padded, cv2.CV_64F, 1, 0, ksize=3)
-    sobely = cv2.Sobel(padded, cv2.CV_64F, 0, 1, ksize=3)
-    sobel = cv2.magnitude(sobelx, sobely)
-
-    sobel = cv2.normalize(sobel, None, 0, 255, cv2.NORM_MINMAX)
-    sobel = sobel.astype(np.uint8)
-
-    Image.fromarray(sobel).save(os.path.join(output_dir, f"{base}_sobel.jpg"))
-
 # ---------------------------
 # PARALLEL PROCESSING- speeds things up
 # ---------------------------
