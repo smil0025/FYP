@@ -7,85 +7,58 @@
 # maybe also include a sobel edge detection filter if necessary? no gaussian, we don't want
 # the images to get any blurrier
 
-# import libraries
 import cv2
 from PIL import Image
 import numpy as np
 import os
-import matplotlib.pyplot as plt
 
-def img_processing(input_path):
-    """
-    Loads an RGB JPG image, converts to greyscale, resizes to 256x256 with padding,
-    rotates 90, 180, 270 degrees, and saves all versions as original_grey_<angle>.jpg
-    """
-    # Load image with OpenCV (BGR format)
+def img_processing(input_path, output_dir):
     img = cv2.imread(input_path)
 
-    # Convert to greyscale
+    if img is None:
+        print(f"Skipping unreadable file: {input_path}")
+        return
+
     grey = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # --- Resize to 256x256 with padding ---
+    # Resize + pad
     desired_size = 256
     h, w = grey.shape
 
-    # Compute scale factor
     scale = desired_size / max(h, w)
     new_w, new_h = int(w * scale), int(h * scale)
 
-    # Resize while keeping aspect ratio
     resized = cv2.resize(grey, (new_w, new_h), interpolation=cv2.INTER_AREA)
 
-    # Create padded 256x256 canvas
     padded = np.zeros((desired_size, desired_size), dtype=np.uint8)
-
-    # Center the resized image
     x_offset = (desired_size - new_w) // 2
     y_offset = (desired_size - new_h) // 2
     padded[y_offset:y_offset+new_h, x_offset:x_offset+new_w] = resized
 
-    # Convert to PIL for rotation + saving
     pil_img = Image.fromarray(padded)
 
-    # Extract base filename
     base = os.path.splitext(os.path.basename(input_path))[0]
 
-    # Save greyscale resized image
-    pil_img.save(f"{base}_grey_0.jpg")
+    # ---- SAVE STANDARD + ROTATIONS ----
+    pil_img.save(os.path.join(output_dir, f"{base}_grey_0.jpg"))
 
-    # Rotation angles
-    angles = [90, 180, 270]
-
-    for angle in angles:
+    for angle in [90, 180, 270]:
         rotated = pil_img.rotate(angle, expand=True)
-        rotated.save(f"{base}_grey_{angle}.jpg")
+        rotated.save(os.path.join(output_dir, f"{base}_grey_{angle}.jpg"))
 
- # Test img_processing function on one of our images   
-input_file = "test_img.JPG"
-img_processing(input_file)
+    # ---- FLIPS ----
+    h_flip = pil_img.transpose(Image.FLIP_LEFT_RIGHT)
+    h_flip.save(os.path.join(output_dir, f"{base}_grey_hflip.jpg"))
 
-# check img_processing is working correctly by displaying the processed images
-def display_subplots(input_path):
-    base = os.path.splitext(os.path.basename(input_path))[0]
+    v_flip = pil_img.transpose(Image.FLIP_TOP_BOTTOM)
+    v_flip.save(os.path.join(output_dir, f"{base}_grey_vflip.jpg"))
 
-    # Load the processed images
-    img_0 = Image.open(f"{base}_grey_0.jpg")
-    img_90 = Image.open(f"{base}_grey_90.jpg")
-    img_180 = Image.open(f"{base}_grey_180.jpg")
-    img_270 = Image.open(f"{base}_grey_270.jpg")
+    # ---- SOBEL (saved separately for now) ----
+    sobelx = cv2.Sobel(padded, cv2.CV_64F, 1, 0, ksize=3)
+    sobely = cv2.Sobel(padded, cv2.CV_64F, 0, 1, ksize=3)
+    sobel = cv2.magnitude(sobelx, sobely)
 
-    # Set up 2x2 subplot
-    fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+    sobel = cv2.normalize(sobel, None, 0, 255, cv2.NORM_MINMAX)
+    sobel = sobel.astype(np.uint8)
 
-    images = [img_0, img_90, img_180, img_270]
-    titles = ["Grey (0°)", "Grey (90°)", "Grey (180°)", "Grey (270°)"]
-
-    for ax, image, title in zip(axes.flatten(), images, titles):
-        ax.imshow(image, cmap="gray")
-        ax.set_title(title)
-        ax.axis("off")
-
-    plt.tight_layout()
-    plt.show()
-
-display_subplots("test_img.JPG")
+    Image.fromarray(sobel).save(os.path.join(output_dir, f"{base}_sobel.jpg"))
