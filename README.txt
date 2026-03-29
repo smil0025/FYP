@@ -2,7 +2,7 @@ The files in this image classifier have the following responsibilities:
 
 input file (raw data):
 - raw image data in folders to define class (material type)
-- supplied to the prelim_img_processing.py function
+- supplies to the prelim_img_processing.py function
 
 prelim_img_processing:
 - prepares input data to be suited to going into the classifier
@@ -23,7 +23,7 @@ processed (dataset output by img processing):
 
 dataset.py:
 - reconfigures the processed data files to suit input to a pytorch image classifier
-- supplies model.py
+- supplies to train.py
 
 model.py:
 - contains/defines the actual CNN (convolution layers) function

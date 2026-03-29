@@ -19,9 +19,9 @@ import shutil
 from multiprocessing import Pool, cpu_count
 
 # ---------------------------
-# CONFIG- currently just working on cotton vs poly satin
+# CONFIG- adding classes as we have more training data
 # ---------------------------
-VALID_CLASSES = ["cotton", "poly_satin"]
+VALID_CLASSES = ["cotton", "poly_satin", "wool", "poly_chiffon"]
 VALID_EXTS = (".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff")
 
 # ---------------------------
