@@ -1,0 +1,5 @@
+# Ignore all processed_v* folders
+processed_v*/
+
+# Ignore all output_v* folders
+output_v*/
