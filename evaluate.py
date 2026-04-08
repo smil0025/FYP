@@ -120,7 +120,7 @@ def evaluate_model_no_sklearn(model, test_dir):
     plt.show()
 
 # Recreate model first
-num_classes = len(temp_dataset.class_names)  # cotton vs poly_satin
+num_classes = len(temp_dataset.class_names) 
 model = SimpleCNN(num_classes=num_classes)
 model.load_state_dict(torch.load("fabric_cnn.pth"))
 model.eval()
