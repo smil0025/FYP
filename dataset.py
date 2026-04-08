@@ -10,7 +10,7 @@ import numpy as np
 def build_gabor_kernels():
     kernels = []
 
-    ksize = 21
+    ksize = 9
     sigma = 5.0
     gamma = 0.5
 
@@ -44,16 +44,21 @@ class FabricDataset(Dataset):
         self.class_names = sorted(os.listdir(root_dir))
         self.class_to_idx = {cls: i for i, cls in enumerate(self.class_names)}
 
+        VALID_EXTS = (".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff")
+
         for cls in self.class_names:
             class_path = os.path.join(root_dir, cls)
 
-            for file in os.listdir(class_path):
+            for file in os.listdir(class_path):   # <-- indentation fixed
+                if not file.lower().endswith(VALID_EXTS):
+                    continue
                 path = os.path.join(class_path, file)
                 self.image_paths.append(path)
                 self.labels.append(self.class_to_idx[cls])
 
         # build once (important!)
         self.gabor_kernels = build_gabor_kernels()
+        print(f"Loaded {len(self.image_paths)} images from {len(self.class_names)} classes")
 
     def __len__(self):
         return len(self.image_paths)
