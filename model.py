@@ -7,7 +7,7 @@ class SimpleCNN(nn.Module):
     def __init__(self, num_classes):
         super(SimpleCNN, self).__init__()
 
-        self.conv1 = nn.Conv2d(2, 16, 3, padding=1)   # 2 input channels
+        self.conv1 = nn.Conv2d(6, 16, 3, padding=1)   # 6 input channels
         self.conv2 = nn.Conv2d(16, 32, 3, padding=1)
         self.conv3 = nn.Conv2d(32, 64, 3, padding=1)
 

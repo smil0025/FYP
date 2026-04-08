@@ -91,7 +91,10 @@ def evaluate_model_no_sklearn(model, test_dir):
         print(f"{class_name}: {class_acc:.2f}% ({correct}/{total})")
 
     # Confusion matrix
-    num_classes = len(class_names)
+    test_dataset = FabricDataset(test_dir)
+    num_classes = len(test_dataset.class_names)
+
+    model = SimpleCNN(num_classes=num_classes)
     cm = np.zeros((num_classes, num_classes), dtype=int)
     for t, p in zip(all_labels, all_preds):
         cm[t, p] += 1
@@ -117,7 +120,7 @@ def evaluate_model_no_sklearn(model, test_dir):
     plt.show()
 
 # Recreate model first
-num_classes = 2  # cotton vs poly_satin
+num_classes = len(temp_dataset.class_names)  # cotton vs poly_satin
 model = SimpleCNN(num_classes=num_classes)
 model.load_state_dict(torch.load("fabric_cnn.pth"))
 model.eval()
