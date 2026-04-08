@@ -6,6 +6,7 @@
 
 # maybe also include a sobel edge detection filter if necessary? no gaussian, we don't want
 # the images to get any blurrier
+# random commenty stuff
 
 # ---------------------------
 # IMPORTS

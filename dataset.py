@@ -6,6 +6,7 @@ import numpy as np
 
 # ---------------------------
 # GABOR FILTER BANK
+# random commenty stuff
 # ---------------------------
 def build_gabor_kernels():
     kernels = []
